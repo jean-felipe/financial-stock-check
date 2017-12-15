@@ -1,6 +1,6 @@
 class ListStockSymbol < BaseService
 
-	def initialize(start_date:, stock_symbol:)
+	def initialize(start_date, stock_symbol)
 		@start_date   = start_date
 		@stock_symbol = stock_symbol
 	end
@@ -22,12 +22,14 @@ class ListStockSymbol < BaseService
 	end
 
 	def find_symbol_by_data_range
-		@symbols = {}
+		@symbols = []
 		@prices.dig('datatable', 'data').map do |code, date, price|
-			next unless code == @stock_symbol && date < @start_date.strftime
-				@symbols.merge(symbol: code, date: date, price: price)
-			end
-			@symbols
+			if code == @stock_symbol && date > @start_date.strftime
+			  @symbols.push [code,date ,price]
+      else
+        next
+      end
 		end
+      @symbols
 	end
 end
