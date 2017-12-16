@@ -7,6 +7,7 @@ class ListStockSymbol < BaseService
 
 	def process!
 		build_data
+    find_symbol_by_data_range
 	end
 
 	private
@@ -22,14 +23,14 @@ class ListStockSymbol < BaseService
 	end
 
 	def find_symbol_by_data_range
-		@symbols = []
-		@prices.dig('datatable', 'data').map do |code, date, price|
+		@stock_values = []
+		@prices.dig('datatable', 'data').map do |code, date, open, high, low, close|
 			if code == @stock_symbol && date > @start_date.strftime
-			  @symbols.push [code,date ,price]
+			  @stock_values.push [code, date, open, high, low, close]
       else
         next
       end
 		end
-      @symbols
+      @stock_values
 	end
 end
