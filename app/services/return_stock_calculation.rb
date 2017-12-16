@@ -38,21 +38,21 @@ class ReturnStockCalculation < BaseService
     end
 
     @high = calculate_average(high_values)
-    @low  = calculate_average(low _values)
+    @low  = calculate_average(low_values)
     @drawdown = max_drawdown_formula
   end
 
   def max_drawdown_formula
-    (@high - @low)\ @high
+    (@high - @low).div(@high)
   end
 
   def stock_return_formula
-    (@open - @close)\ @open
+    (@open - @close).div(@open)
   end
 
   def calculate_average(values)
     count = values.count
-    total = values.sum
-    media = total/count
+    total = values.map(&:first).inject(:+)
+    media = (total).div(count)
   end
 end
