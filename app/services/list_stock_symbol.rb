@@ -1,4 +1,4 @@
-class ListStockSymbol < BaseService
+class ListStockSymbol < BaseServiceopen
 
 	def initialize(start_date, stock_symbol)
 		@start_date   = start_date
@@ -7,6 +7,7 @@ class ListStockSymbol < BaseService
 
 	def process!
 		build_data
+    calculator.call
 	end
 
 	private
@@ -22,14 +23,22 @@ class ListStockSymbol < BaseService
 	end
 
 	def find_symbol_by_data_range
-		@symbols = []
-		@prices.dig('datatable', 'data').map do |code, date, price|
+		@stock_values = []
+		@prices.dig('datatable', 'data').map do |code, date, _open, high, low, close|
 			if code == @stock_symbol && date > @start_date.strftime
-			  @symbols.push [code,date ,price]
+			  @stock_values.push [code,date ,price, high, low]
       else
         next
       end
 		end
-      @symbols
+      @stock_values
 	end
+
+  private
+
+  def calculator
+    @calculator = ReturnStockCalculation.new(
+      values: @stock_values
+    )
+  end
 end
