@@ -1,7 +1,15 @@
 class ListStockSymbol < BaseService
+  attr_reader :stock_values
 
-	def initialize(start_date, stock_symbol)
-		@start_date   = start_date
+  # This service returns an Array with prices for a single stock
+  # To initialize this you should inform:
+  # 1 - An start date e.g 2017-10-02
+  # 2 - The stock symbol e.g AAL
+  #
+  # => the response will be an array with prices separeted by date
+
+	def initialize(start_date:, stock_symbol:)
+		@start_date   = start_date.to_date
 		@stock_symbol = stock_symbol
 	end
 
