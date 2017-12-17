@@ -1,20 +1,19 @@
-class CheckStock < Thor
+namespace :check_stock_return do
   STOCK_NAMES = %w(A AA AAL AAN AAMC).freeze
 
-	desc "calculate the return the stock, you should inform an start date and the stock symbol.",
-	 "return a list of stocks symbols"
-	def check
+	desc "calculate the return the stock, you should inform an start date and the stock symbol."
+	task check: :environment do
 		puts "Hello dude"
 	end
 
-	desc "list_symbols", "list the stock symbols"
-	def list_symbols
+	desc "list the stock symbols"
+	task list_symbols: :environment  do
 		get_name
     validate_name(@name) ? get_date : show_examples
 	end
 
   def get_year
-    puts "please inform the year, it should be yyyy (4 digits)"
+    puts "please inform the year, it should be in between 1988 and 1999, as well be yyyy (4 digits)"
     @year = STDIN.gets.chomp
     return_error("year") unless @year.length == 4 && @year >= "1988" && @year <= "1999"
   end
@@ -38,6 +37,14 @@ class CheckStock < Thor
     get_year
     get_month
     get_day
+    @start_date = "#{@year}-#{@month}-#{@day}"
+    if stock_lister.call
+      puts 'we got the list of symbols'
+       calculator ||= ReturnStockCalculation.new(values: @stock_lister.stock_values).call
+       puts "drawdown: #{calculator.dig(:drawdown)}, stock_return: #{calculator.dig(:stock_return)}"
+    else
+      puts 'a error happened'
+    end
   end
 
   def get_name
@@ -48,7 +55,7 @@ class CheckStock < Thor
 
   def return_error(type)
     generic_date_error_message(type)
-    public_send("get_#{type}")
+    send("get_#{type}")
   end
 
   def generic_date_error_message(label)
@@ -73,5 +80,12 @@ class CheckStock < Thor
 
   def validate_name(name)
     STOCK_NAMES.include?(name)
+  end
+
+  def stock_lister
+    @stock_lister ||= ListStockSymbol.new(
+      start_date: @start_date,
+      stock_symbol: @name
+    )
   end
 end

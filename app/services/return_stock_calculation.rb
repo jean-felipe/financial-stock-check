@@ -1,6 +1,6 @@
 class ReturnStockCalculation < BaseService
 
-  attr_accessor :drawdown, :stock_return
+  attr_reader :drawdown, :response
 
   # To initialize this service
   # { values } should be an array with values to be calculated
@@ -15,6 +15,7 @@ class ReturnStockCalculation < BaseService
   # 4 - high = the high price which that stock got on that date
   # 5 - low = is the lowest price that the stock got on that date
   # 6 - close = the price that stock got when the day was closed
+  #
 
   def initialize(values)
     @values = values
@@ -37,12 +38,12 @@ class ReturnStockCalculation < BaseService
     open_values = []
     close_values  = []
 
-    @values.map do |_codes, _date, open, _high, _low, close|
+    @values.dig(:values).map do |_codes, _date, open, _high, _low, close|
       open_values.push [open]
       close_values.push [close]
     end
 
-    @open = calculate_average(open_values)
+    @open  = calculate_average(open_values)
     @close = calculate_average(close_values)
     @stock_return = stock_return_formula
   end
@@ -52,7 +53,7 @@ class ReturnStockCalculation < BaseService
     high_values = []
     low_values  = []
 
-    @values.map do |_codes, _date, _open, high, low, _close|
+    @values.dig(:values).map do |_codes, _date, _open, high, low, _close|
       high_values.push [high]
       low_values.push [low]
     end
@@ -63,13 +64,13 @@ class ReturnStockCalculation < BaseService
   end
 
   def max_drawdown_formula
-   result = (@high - @low).fdiv(@high)
+   result = (@low - @high).fdiv(@high)
     ("%.2f" % result).to_f
   end
 
   def stock_return_formula
-    result = (@open - @close).fdiv(@open)
-    ("%.2f" % result).to_f
+    result = (@close - @open).fdiv(@open)
+    ("%.3f" % result).to_f
   end
 
   # Shared method to calculate the average
@@ -77,6 +78,6 @@ class ReturnStockCalculation < BaseService
     count = values.count
     total = values.map(&:first).inject(:+)
     average = (total).fdiv(count)
-    ("%.2f" % average).to_f
+    ("%.3f" % average).to_f
   end
 end
