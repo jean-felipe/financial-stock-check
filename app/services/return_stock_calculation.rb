@@ -1,19 +1,38 @@
 class ReturnStockCalculation < BaseService
 
-  def initialize(values:)
+  attr_accessor :drawdown, :stock_return
+
+  # To initialize this service
+  # { values } should be an array with values to be calculated
+  #
+  # This array should contain the stock values from prices.json file
+  # and should contain the follow required data:
+  #  [code, date, open, high, low, close]
+  #
+  # 1 - code = it is the stock code
+  # 2 - date = is the date related with tha stock and the other proce values
+  # 3 - open = price when the stock was open in that date
+  # 4 - high = the high price which that stock got on that date
+  # 5 - low = is the lowest price that the stock got on that date
+  # 6 - close = the price that stock got when the day was closed
+
+  def initialize(values)
     @values = values
   end
 
   def process!
     build_data
+    @response = { drawdown: @drawdown, stock_return: @stock_return }
   end
 
   private
 
   def build_data
     build_drawdown_data
+    build_stock_return_data
   end
 
+  # Method to build and calculate the stock prices
   def build_stock_return_data
     open_values = []
     close_values  = []
@@ -28,6 +47,7 @@ class ReturnStockCalculation < BaseService
     @stock_return = stock_return_formula
   end
 
+  # Method to calculate the drawdown prices
   def build_drawdown_data
     high_values = []
     low_values  = []
@@ -43,16 +63,20 @@ class ReturnStockCalculation < BaseService
   end
 
   def max_drawdown_formula
-    (@high - @low).div(@high)
+   result = (@high - @low).fdiv(@high)
+    ("%.2f" % result).to_f
   end
 
   def stock_return_formula
-    (@open - @close).div(@open)
+    result = (@open - @close).fdiv(@open)
+    ("%.2f" % result).to_f
   end
 
+  # Shared method to calculate the average
   def calculate_average(values)
     count = values.count
     total = values.map(&:first).inject(:+)
-    media = (total).div(count)
+    average = (total).fdiv(count)
+    ("%.2f" % average).to_f
   end
 end
