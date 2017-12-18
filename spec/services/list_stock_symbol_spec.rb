@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ListStockSymbol do
   subject do
-    described_class.new(start_date, stock_symbol)
+    described_class.new(start_date: start_date, stock_symbol: stock_symbol)
   end
 
   describe '#process' do
