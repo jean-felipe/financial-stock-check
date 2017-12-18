@@ -32,6 +32,7 @@ namespace :check_stock_return do
 
   private
 
+  # Build date and name section
   def get_date
     puts "inform a date that we will get the values since this date, it should be yyyy-mm-dd"
     get_year
@@ -41,7 +42,7 @@ namespace :check_stock_return do
     if stock_lister.call
       puts 'we got the list of symbols'
        calculator ||= ReturnStockCalculation.new(values: @stock_lister.stock_values).call
-       puts "drawdown: #{calculator.dig(:drawdown)}, stock_return: #{calculator.dig(:stock_return)}"
+       notificator(calculator.dig(:drawdown), calculator.dig(:stock_return))
     else
       puts 'a error happened'
     end
@@ -52,6 +53,8 @@ namespace :check_stock_return do
     input = STDIN.gets.chomp
     set_name(input.to_i)
   end
+
+  # Erros handler section
 
   def return_error(type)
     generic_date_error_message(type)
@@ -67,6 +70,8 @@ namespace :check_stock_return do
     get_name
   end
 
+  # Validations section
+  
   def set_name(input)
     @name ||=
     case input
@@ -87,5 +92,44 @@ namespace :check_stock_return do
       start_date: @start_date,
       stock_symbol: @name
     )
+  end
+
+  # Notificator service
+
+  def notificator(drawdown, stock_return)
+    puts 'The data was successfully created!'
+    puts 'Please inform how to you want to receive the values of drawdown and the stock returns.'
+    puts "1 - Email\n 2 - Twitter\n 3 - Whatsapp\n 4 - Facebook"
+    input = STDIN.gets.chomp
+
+    user_info = notification_type(input)
+    user_info_error if user_info.nil?
+
+    @notificator = Notifications.new(
+      values: [drawdown, stock_return, @name],
+      user_info: user_info,
+      type: input
+    )
+
+    @notificator.call
+  end
+
+  def user_info_error
+    puts "Please insert a valid information, make sure to inform a correct contact if you will not receive the data."
+    ask_for_email
+  end
+
+  def notification_type(type)
+    case type
+    when "1" then ask_for_email
+    when "2" then ask_for_credentials("twitter")
+    when "3" then ask_for_credentials("whatsapp")
+    when "4" then ask_for_credentials("facebook")
+    end
+  end
+
+  def ask_for_email
+    puts 'please inform your email.'
+    input = STDIN.gets.chomp
   end
 end
