@@ -23,12 +23,7 @@ class Notifications < BaseService
   private
 
   def set_notification_type
-    case @type
-    when "1" then send_email_notification
-    when "2" then send_twitter_notification
-    when "3" then send_whatsapp_notification
-    when "4" then send_facebook_notification
-    end
+    send_email_notification
   end
 
   def send_email_notification
