@@ -1,0 +1,2 @@
+class SendDataMailer < ApplicationMailer
+end
