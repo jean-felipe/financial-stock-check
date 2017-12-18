@@ -98,9 +98,9 @@ namespace :check_stock_return do
 
   def notificator(drawdown, stock_return)
     puts 'The data was successfully created!'
-    puts 'Please inform how to you want to receive the values of drawdown and the stock returns.'
-    puts "1 - Email\n 2 - Twitter\n 3 - Whatsapp\n 4 - Facebook"
-    input = STDIN.gets.chomp
+    # puts 'Please inform how to you want to receive the values of drawdown and the stock returns.'
+    # puts "1 - Email\n 2 - Twitter\n 3 - Whatsapp\n 4 - Facebook" -> It is not implemented yet.
+    input = "1"
 
     user_info = notification_type(input)
     user_info_error if user_info.nil?
@@ -122,9 +122,9 @@ namespace :check_stock_return do
   def notification_type(type)
     case type
     when "1" then ask_for_email
-    when "2" then ask_for_credentials("twitter")
-    when "3" then ask_for_credentials("whatsapp")
-    when "4" then ask_for_credentials("facebook")
+    when "2" then ask_for_credentials("twitter") # -> Not implemmented yet
+    when "3" then ask_for_credentials("whatsapp") # -> Not implemmented yet
+    when "4" then ask_for_credentials("facebook") # -> Not implemmented yet
     end
   end
 

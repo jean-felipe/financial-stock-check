@@ -28,7 +28,7 @@ gem 'puma', '~> 3.7'
 gem 'thor'
 
 gem 'sendgrid-ruby'
-
+gem "koala"
 gem 'dotenv-rails'
 
 group :development, :test do

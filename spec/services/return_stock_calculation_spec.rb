@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ReturnStockCalculation do
   subject do
-    described_class.new(values)
+    described_class.new(values: values)
   end
 
   let(:response) { subject.call }
@@ -19,8 +19,8 @@ RSpec.describe ReturnStockCalculation do
 
     it 'return the drawdown and stock return values' do
       expect(response).to be_an_instance_of(Hash)
-      expect(response[:drawdown]).to eq(0.82)
-      expect(response[:stock_return]).to eq(-0.9)
+      expect(response[:drawdown]).to eq(-0.82)
+      expect(response[:stock_return]).to eq(0.897)
     end
   end
 end
