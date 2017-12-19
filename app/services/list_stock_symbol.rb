@@ -1,3 +1,6 @@
+require 'net/http'
+require 'uri'
+
 class ListStockSymbol < BaseService
   attr_reader :stock_values
 
@@ -26,8 +29,16 @@ class ListStockSymbol < BaseService
 	end
 
 	def load_prices
-		price_file = File.read('prices.json')
-		@prices = JSON.parse(price_file)
+    url = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=BSo5EQuvKfen6M5reZVz"
+    uri = URI.parse(url)
+    response = Net::HTTP.get_response(uri)
+    if response.code == "202"
+      @prices = JSON.parse(response.body)
+   else
+    puts 'the prices cannot be getted from website, it will be loaded from a file.'
+      price_file = File.read('prices.json')
+      @prices = JSON.parse(price_file)
+    end
 	end
 
 	def find_symbol_by_data_range

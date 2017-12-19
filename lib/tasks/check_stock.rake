@@ -15,7 +15,7 @@ namespace :check_stock_return do
   def get_year
     puts "please inform the year, it should be in between 1988 and 1999, as well be yyyy (4 digits)"
     @year = STDIN.gets.chomp
-    return_error("year") unless @year.length == 4 && @year >= "1988" && @year <= "1999"
+    return_error("year") unless @year.length == 4 && @year >= "1988" && @year <= "2017"
   end
 
   def get_month
@@ -49,7 +49,7 @@ namespace :check_stock_return do
   end
 
   def get_name
-    puts "please, selec the stock name:\n (1) - A\n (2) - AA\n (3) - AAL\n (4) - AAN\n (5) - AAMC"
+    puts "please, select the stock name:\n (1) - A\n (2) - AA\n (3) - AAL\n (4) - AAN\n (5) - AAMC"
     input = STDIN.gets.chomp
     set_name(input.to_i)
   end
