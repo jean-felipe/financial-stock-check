@@ -13,7 +13,7 @@ namespace :check_stock_return do
 	end
 
   def get_year
-    puts "please inform the year, it should be in between 1988 and 1999, as well be yyyy (4 digits)"
+    puts "please inform the year, it should be in between 1988 and 2017, as well be yyyy (4 digits)"
     @year = STDIN.gets.chomp
     return_error("year") unless @year.length == 4 && @year >= "1988" && @year <= "2017"
   end
