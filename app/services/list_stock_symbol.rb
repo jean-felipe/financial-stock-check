@@ -32,7 +32,7 @@ class ListStockSymbol < BaseService
     url = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=BSo5EQuvKfen6M5reZVz"
     uri = URI.parse(url)
     response = Net::HTTP.get_response(uri)
-    if response.status == "202"
+    if response.code == "202"
       @prices = JSON.parse(response.body)
    else
     puts 'the prices cannot be getted from website, it will be loaded from a file.'
